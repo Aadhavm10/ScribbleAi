@@ -1,0 +1,15 @@
+node_modules
+dist
+.env
+.env.local
+.env.production
+gcp-service-account.json
+*.log
+.git
+.gitignore
+README.md
+test
+coverage
+.vscode
+.idea
+
