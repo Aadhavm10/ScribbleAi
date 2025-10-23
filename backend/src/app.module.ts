@@ -8,6 +8,7 @@ import { AiModule } from './ai/ai.module';
 import { ElasticsearchModule } from './elasticsearch/elasticsearch.module';
 import { VertexAiModule } from './vertex-ai/vertex-ai.module';
 import { SearchModule } from './search/search.module';
+import { DevController } from './dev/dev.controller';
 import { FoldersModule } from './folders/folders.module';
 
 @Module({
@@ -21,7 +22,7 @@ import { FoldersModule } from './folders/folders.module';
     SearchModule,
     FoldersModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, DevController],
   providers: [AppService],
 })
 export class AppModule {}
