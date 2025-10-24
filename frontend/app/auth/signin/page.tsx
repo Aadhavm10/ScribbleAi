@@ -42,24 +42,6 @@ export default function SignIn() {
     }
   };
 
-  const handleSkipLogin = async () => {
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      // Use mock credentials to bypass authentication
-      const result = await signIn('credentials', { 
-        email: 'demo@example.com', 
-        password: 'demo123' 
-      });
-      if (result?.ok) {
-        router.push('/');
-      }
-    } catch (error) {
-      setError((error as Error).message || 'Failed to skip login');
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
@@ -167,17 +149,6 @@ export default function SignIn() {
               </span>
             </button>
           </form>
-
-          {/* Skip Login Button */}
-          <div className="mt-4">
-            <button
-              onClick={handleSkipLogin}
-              disabled={isLoading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              {isLoading ? 'Loading...' : 'Skip Login (Demo Mode)'}
-            </button>
-          </div>
 
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
