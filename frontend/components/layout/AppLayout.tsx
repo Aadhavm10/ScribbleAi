@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ConversationalSearch from '../ConversationalSearch';
+import Squares from '../Squares';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -53,10 +54,21 @@ export default function AppLayout({ children }: AppLayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="relative min-h-screen overflow-hidden bg-[#060010]">
+      {/* Animated Squares Background */}
+      <div className="fixed inset-0 z-0">
+        <Squares 
+          speed={0.3}
+          squareSize={40}
+          direction="diagonal"
+          borderColor="#222"
+          hoverFillColor="#4338ca"
+        />
+      </div>
+
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-white border-r border-[#E5E5E5] transition-all duration-300 z-40 ${
+        className={`fixed left-0 top-0 h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-r border-gray-200 dark:border-gray-800 transition-all duration-300 z-40 ${
           sidebarOpen ? 'w-64' : 'w-20'
         }`}
       >
@@ -172,10 +184,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
         className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-20'}`}
       >
         {/* Top Bar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[#E5E5E5]">
+        <header className="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
           <div className="px-8 py-5 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h2 className="text-2xl font-bold text-black">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {navigation.find(item => item.href === pathname)?.name || 'Dashboard'}
               </h2>
             </div>
@@ -184,20 +196,20 @@ export default function AppLayout({ children }: AppLayoutProps) {
               {/* Search Button */}
               <button
                 onClick={() => setShowSearch(true)}
-                className="flex items-center gap-3 px-4 py-2 bg-white border border-[#E5E5E5] hover:border-black hover:bg-[#F5F5F5] transition-all duration-150"
+                className="flex items-center gap-3 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-150 rounded-lg"
               >
-                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <span className="hidden sm:inline text-black font-medium text-sm">Search</span>
-                <kbd className="hidden sm:inline px-2 py-1 text-xs text-black bg-[#F5F5F5] border border-[#E5E5E5] font-medium">⌘K</kbd>
+                <span className="hidden sm:inline text-gray-900 dark:text-white font-medium text-sm">Search</span>
+                <kbd className="hidden sm:inline px-2 py-1 text-xs text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 font-medium rounded">⌘K</kbd>
               </button>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="relative">
+        <main className="relative z-10">
           {children}
         </main>
       </div>

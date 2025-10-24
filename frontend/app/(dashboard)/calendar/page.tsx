@@ -186,18 +186,24 @@ export default function CalendarPage() {
     );
   }
 
+  // Get upcoming events (next 7 days)
+  const upcomingEvents = events
+    .filter(event => new Date(event.startDate) >= new Date())
+    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+    .slice(0, 10);
+
   return (
     <div className="p-8">
       {/* Header */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
             Calendar
           </h1>
           <div className="flex gap-3">
             <button
               onClick={handleSyncGoogle}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center gap-2"
+              className="px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/>
@@ -217,23 +223,96 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* Calendar */}
-      <div className="bg-white rounded-xl shadow-lg p-6" style={{ height: '700px' }}>
-        <Calendar
-          localizer={localizer}
-          events={calendarEvents}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: '100%' }}
-          onSelectSlot={handleSelectSlot}
-          onSelectEvent={handleSelectEvent}
-          selectable
-          view={view}
-          onView={setView}
-          date={date}
-          onNavigate={setDate}
-          eventPropGetter={eventStyleGetter}
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Calendar */}
+        <div className="lg:col-span-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700" style={{ height: '700px' }}>
+          <Calendar
+            localizer={localizer}
+            events={calendarEvents}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: '100%' }}
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={handleSelectEvent}
+            selectable
+            view={view}
+            onView={setView}
+            date={date}
+            onNavigate={setDate}
+            eventPropGetter={eventStyleGetter}
+          />
+        </div>
+
+        {/* Upcoming Events Sidebar */}
+        <div className="lg:col-span-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700" style={{ height: '700px', overflowY: 'auto' }}>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+            <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Upcoming Events
+          </h2>
+          
+          {upcomingEvents.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">No upcoming events</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {upcomingEvents.map((event) => {
+                const eventDate = new Date(event.startDate);
+                const isToday = format(eventDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+                const isTomorrow = format(eventDate, 'yyyy-MM-dd') === format(new Date(Date.now() + 86400000), 'yyyy-MM-dd');
+                
+                return (
+                  <div
+                    key={event.id}
+                    onClick={() => setSelectedEvent(event)}
+                    className="group bg-white dark:bg-gray-900 rounded-lg p-4 border-l-4 hover:shadow-md transition-all cursor-pointer"
+                    style={{ borderLeftColor: event.color || '#6366f1' }}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {event.title}
+                      </h3>
+                      {isToday && (
+                        <span className="px-2 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded">
+                          Today
+                        </span>
+                      )}
+                      {isTomorrow && (
+                        <span className="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded">
+                          Tomorrow
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>{format(eventDate, 'MMM d, yyyy')}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>{format(eventDate, 'h:mm a')} - {format(new Date(event.endDate), 'h:mm a')}</span>
+                    </div>
+                    {event.description && (
+                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-2 line-clamp-2">
+                        {event.description}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Create Event Modal */}
