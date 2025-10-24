@@ -26,7 +26,7 @@ export default function AllNotesPage() {
   const loadNotes = useCallback(async () => {
     try {
       setError(null);
-      const fetchedNotes = await NotesAPI.getNotes(userId);
+      const fetchedNotes = await NotesAPI.getNotes();
       setNotes(fetchedNotes);
       setFilteredNotes(fetchedNotes);
     } catch (err) {
@@ -35,7 +35,7 @@ export default function AllNotesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, []);
 
   // Check for note ID in URL params
   useEffect(() => {
@@ -91,10 +91,13 @@ export default function AllNotesPage() {
     setFilteredNotes(filtered);
   }, [notes, searchQuery, sortBy]);
 
-  const handleCreateNote = async (noteData: CreateNoteDto) => {
+  const handleCreateNote = async (noteData: Omit<CreateNoteDto, 'userId'> | UpdateNoteDto) => {
     try {
       setError(null);
-      const newNote = await NotesAPI.createNote(noteData);
+      const newNote = await NotesAPI.createNote({
+        title: noteData.title || '',
+        content: noteData.content || ''
+      });
       setNotes([newNote, ...notes]);
       setIsCreating(false);
     } catch (err) {
@@ -103,21 +106,15 @@ export default function AllNotesPage() {
     }
   };
 
-  const handleCreateNoteWrapper = async (noteData: CreateNoteDto | UpdateNoteDto) => {
-    const createData: CreateNoteDto = {
-      title: noteData.title || '',
-      content: noteData.content || '',
-      userId: userId
-    };
-    await handleCreateNote(createData);
-  };
-
-  const handleUpdateNote = async (noteData: UpdateNoteDto) => {
+  const handleUpdateNote = async (noteData: UpdateNoteDto | Omit<CreateNoteDto, 'userId'>) => {
     if (!editingNote) return;
 
     try {
       setError(null);
-      const updatedNote = await NotesAPI.updateNote(editingNote.id, noteData);
+      const updatedNote = await NotesAPI.updateNote(editingNote.id, {
+        title: noteData.title,
+        content: noteData.content
+      });
       setNotes(notes.map(note => note.id === updatedNote.id ? updatedNote : note));
       setEditingNote(null);
       if (selectedNote?.id === updatedNote.id) {
@@ -127,14 +124,6 @@ export default function AllNotesPage() {
       setError('Failed to update note');
       console.error('Error updating note:', err);
     }
-  };
-
-  const handleUpdateNoteWrapper = async (noteData: CreateNoteDto | UpdateNoteDto) => {
-    const updateData: UpdateNoteDto = {
-      title: noteData.title,
-      content: noteData.content
-    };
-    await handleUpdateNote(updateData);
   };
 
   const handleDeleteNote = async (noteId: string) => {
@@ -288,7 +277,7 @@ export default function AllNotesPage() {
               </button>
             </div>
             <NoteEditor
-              onSave={handleCreateNoteWrapper}
+              onSave={handleCreateNote}
               onCancel={() => setIsCreating(false)}
             />
           </div>
@@ -312,7 +301,7 @@ export default function AllNotesPage() {
             </div>
             <NoteEditor
               note={editingNote}
-              onSave={handleUpdateNoteWrapper}
+              onSave={handleUpdateNote}
               onCancel={() => setEditingNote(null)}
             />
           </div>

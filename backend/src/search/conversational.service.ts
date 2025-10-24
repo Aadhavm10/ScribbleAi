@@ -15,6 +15,8 @@ export class ConversationalService {
 
   async handleQuery(query: string, userId: string, conversationId?: string) {
     try {
+      this.logger.log(`Handling conversational query: "${query}" for user: ${userId}`);
+
       // Get or create conversation
       let conversation = conversationId
         ? await this.prisma.conversation.findUnique({
@@ -30,38 +32,44 @@ export class ConversationalService {
         throw new Error('Conversation not found');
       }
 
-      // Perform hybrid search
-      const searchResults = await this.searchService.hybridSearch(query, userId, 10);
+      // Perform search to find relevant notes
+      const searchResults = await this.searchService.hybridSearch(query, userId, 5);
+
+      this.logger.log(`Found ${searchResults.length} search results`);
 
       // Build context from search results
-      const context = searchResults
-        .map(r => `[Note: ${r.title}]\n${r.excerpt}`)
-        .join('\n\n');
+      const context = searchResults.length > 0
+        ? searchResults
+            .map(r => `[Note: ${r.title}]\n${r.excerpt}`)
+            .join('\n\n')
+        : 'No notes found matching your query.';
 
       // Build conversation history
-      const history = conversation.messages
+      const history = conversation.messages && conversation.messages.length > 0
         ? conversation.messages.map((m: any) => `${m.role}: ${m.content}`).join('\n')
         : '';
 
-      // Generate response with Gemini
-      const systemPrompt = `You are ScribbleAI, an intelligent assistant helping users search their notes.
-Provide clear, conversational responses that:
-1. Directly answer the user's question
-2. Cite specific notes using [Note: "Title"]
-3. Are concise but informative
-4. Offer to provide more details if needed
+      // Generate response with Vertex AI
+      const systemPrompt = `You are ScribbleAI, an intelligent assistant helping users search and understand their notes.
 
-Conversation history:
-${history}
+${history ? `Previous conversation:\n${history}\n` : ''}
 
 Relevant notes found:
 ${context}
 
 User query: "${query}"
 
+Provide a helpful response that:
+1. Directly answers the user's question based on their notes
+2. References specific notes by title when relevant
+3. Is concise but informative (2-3 sentences)
+4. If no relevant notes were found, suggest they create a note about this topic
+
 Response:`;
 
+      this.logger.log('Generating AI response...');
       const response = await this.vertexAi.generateResponse(systemPrompt);
+      this.logger.log('AI response generated successfully');
 
       // Save messages
       await this.prisma.conversationMessage.createMany({
@@ -71,7 +79,7 @@ Response:`;
             conversationId: conversation.id,
             role: 'assistant',
             content: response,
-            sources: searchResults.map(r => ({
+            sources: searchResults.slice(0, 5).map(r => ({
               noteId: r.noteId,
               title: r.title,
               excerpt: r.excerpt,
@@ -87,8 +95,8 @@ Response:`;
       };
     } catch (error) {
       this.logger.error('Conversational query failed:', error.message);
+      this.logger.error('Error stack:', error.stack);
       throw error;
     }
   }
 }
-

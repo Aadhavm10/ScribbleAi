@@ -1,86 +1,113 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
-
-// Mock mode - skip Prisma if SKIP_PRISMA is true
-const isMockMode = process.env.SKIP_PRISMA === 'true';
-const prisma = isMockMode ? null : new PrismaClient();
 
 const handler = NextAuth({
-  adapter: isMockMode ? undefined : PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    CredentialsProvider({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" }
+      authorization: {
+        params: {
+          access_type: 'offline',
+          prompt: 'consent',
+          scope: [
+            'openid',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/gmail.readonly',
+            'https://www.googleapis.com/auth/drive.readonly',
+          ].join(' '),
+        },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
-        // Mock mode - allow any credentials
-        if (isMockMode) {
-          return {
-            id: 'mock-user-id',
-            email: credentials.email,
-            name: 'Demo User',
-          };
-        }
-
-        try {
-          const user = await prisma!.user.findUnique({
-            where: {
-              email: credentials.email
-            }
-          });
-
-          if (!user || !user.password) {
-            return null;
-          }
-
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-
-          if (!isPasswordValid) {
-            return null;
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-          };
-        } catch (error) {
-          console.error("Auth error:", error);
-          return null;
-        }
-      }
-    })
+    }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      // After successful Google sign-in, create/update user in our backend
+      if (account?.provider === 'google') {
+        try {
+          // Step 1: Sync user to backend
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/auth/sync-user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: user.email,
+              name: user.name,
+              image: user.image,
+            }),
+          });
+
+          if (!response.ok) {
+            console.error('Failed to sync user to backend');
+            return false;
+          }
+
+          const data = await response.json();
+          user.id = data.id;
+
+          // Step 2: Generate backend JWT for API requests
+          const jwtResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/auth/generate-token`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: data.id }),
+          });
+
+          if (jwtResponse.ok) {
+            const jwtData = await jwtResponse.json();
+            user.backendToken = jwtData.token;
+
+            // Step 3: Store Google OAuth tokens for syncing
+            if (account.access_token && account.refresh_token) {
+              const expiresAt = account.expires_at
+                ? new Date(account.expires_at * 1000).toISOString()
+                : new Date(Date.now() + 3600 * 1000).toISOString();
+
+              const scopes = account.scope ? account.scope.split(' ') : [];
+
+              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/connect/google`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${jwtData.token}`,
+                },
+                body: JSON.stringify({
+                  accessToken: account.access_token,
+                  refreshToken: account.refresh_token,
+                  expiresAt,
+                  scopes,
+                }),
+              }).catch(err => {
+                console.error('Failed to store Google OAuth tokens:', err);
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error syncing user to backend:', error);
+          return false;
+        }
+      }
+
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.backendToken = user.backendToken;
       }
+
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
+        session.backendToken = token.backendToken as string;
       }
       return session;
     },

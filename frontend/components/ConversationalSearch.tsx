@@ -16,11 +16,10 @@ interface Message {
 }
 
 interface ConversationalSearchProps {
-  userId: string;
   onNoteClick: (noteId: string) => void;
 }
 
-export default function ConversationalSearch({ userId, onNoteClick }: ConversationalSearchProps) {
+export default function ConversationalSearch({ onNoteClick }: ConversationalSearchProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,7 +36,6 @@ export default function ConversationalSearch({ userId, onNoteClick }: Conversati
     try {
       const result = await SearchAPI.conversationalSearch(
         input,
-        userId,
         conversationId,
       );
 

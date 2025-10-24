@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import type { CreateNoteDto, UpdateNoteDto } from './notes.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('notes')
+@UseGuards(JwtAuthGuard)
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Get()
-  async list(@Query('userId') userId: string) {
-    return this.notesService.listNotesByUser(userId);
+  async list(@CurrentUser() user: any) {
+    return this.notesService.listNotesByUser(user.id);
   }
 
   @Get(':id')
@@ -17,8 +20,8 @@ export class NotesController {
   }
 
   @Post()
-  async create(@Body() body: CreateNoteDto) {
-    return this.notesService.createNote(body);
+  async create(@Body() body: Omit<CreateNoteDto, 'userId'>, @CurrentUser() user: any) {
+    return this.notesService.createNote({ ...body, userId: user.id });
   }
 
   @Put(':id')

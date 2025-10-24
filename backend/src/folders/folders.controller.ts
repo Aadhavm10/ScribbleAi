@@ -6,28 +6,31 @@ import {
   Delete,
   Body,
   Param,
-  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FoldersService } from './folders.service';
 import type { CreateFolderDto, UpdateFolderDto } from './folders.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('folders')
+@UseGuards(JwtAuthGuard)
 export class FoldersController {
   constructor(private readonly foldersService: FoldersService) {}
 
   @Post()
-  async createFolder(@Body() createFolderDto: CreateFolderDto) {
-    return this.foldersService.createFolder(createFolderDto);
+  async createFolder(@Body() createFolderDto: Omit<CreateFolderDto, 'userId'>, @CurrentUser() user: any) {
+    return this.foldersService.createFolder({ ...createFolderDto, userId: user.id });
   }
 
   @Get()
-  async getFolders(@Query('userId') userId: string) {
-    return this.foldersService.getFolders(userId);
+  async getFolders(@CurrentUser() user: any) {
+    return this.foldersService.getFolders(user.id);
   }
 
   @Get('tree')
-  async getFolderTree(@Query('userId') userId: string) {
-    return this.foldersService.getFolderTree(userId);
+  async getFolderTree(@CurrentUser() user: any) {
+    return this.foldersService.getFolderTree(user.id);
   }
 
   @Get(':id')
