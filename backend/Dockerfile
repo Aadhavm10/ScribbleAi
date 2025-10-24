@@ -3,17 +3,17 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and prisma schema first
 COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
+COPY prisma ./prisma
 
-# Install dependencies
+# Install dependencies (postinstall will run prisma generate)
 RUN npm ci
 
 # Copy source code
 COPY src ./src
-COPY prisma ./prisma
 
 # Generate Prisma Client
 RUN npx prisma generate
