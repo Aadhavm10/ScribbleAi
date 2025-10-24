@@ -25,7 +25,7 @@ export default function ConnectorsPage() {
 
     try {
       // Get fresh session with JWT token
-      const currentSession = await getSession() as any;
+      const currentSession = (await getSession()) as { backendToken?: string };
       const backendToken = currentSession?.backendToken;
 
       if (!backendToken) {
