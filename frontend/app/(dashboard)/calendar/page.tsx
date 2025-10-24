@@ -8,6 +8,8 @@ import { CalendarAPI, CalendarEvent, CreateEventDto, Calendar as CalendarType } 
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
 };

@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Folder, FoldersAPI, CreateFolderDto, UpdateFolderDto } from '../../../lib/api';
 
+export const dynamic = 'force-dynamic';
+
 const FOLDER_ICONS = ['📁', '📂', '📚', '📝', '💼', '🎯', '🚀', '💡', '🎨', '🔥', '⭐', '🌟'];
 const FOLDER_COLORS = [
   '#6366f1', // Indigo

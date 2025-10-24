@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();

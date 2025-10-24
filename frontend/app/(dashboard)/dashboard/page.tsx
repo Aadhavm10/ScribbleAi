@@ -8,6 +8,8 @@ import NoteCard from '../../../components/NoteCard';
 import NoteEditor from '../../../components/NoteEditor';
 import MiniCalendar from '../../../components/MiniCalendar';
 
+export const dynamic = 'force-dynamic';
+
 export default function DashboardPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();

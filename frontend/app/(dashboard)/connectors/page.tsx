@@ -3,6 +3,8 @@
 import { useSession, signIn, getSession } from 'next-auth/react';
 import { useState } from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export default function ConnectorsPage() {
   const { data: session } = useSession();
   const [syncing, setSyncing] = useState(false);

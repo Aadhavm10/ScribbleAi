@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { SearchAPI, SearchResult } from '@/lib/api';
 
+export const dynamic = 'force-dynamic';
+
 export default function SearchPage() {
   const { user } = useAuth();
   const router = useRouter();
