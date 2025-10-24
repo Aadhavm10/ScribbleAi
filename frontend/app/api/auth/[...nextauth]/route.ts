@@ -8,14 +8,11 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          access_type: 'offline',
-          prompt: 'consent',
+          prompt: 'select_account',
           scope: [
             'openid',
-            'https://www.googleapis.com/auth/userinfo.email',
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/gmail.readonly',
-            'https://www.googleapis.com/auth/drive.readonly',
+            'email',
+            'profile',
           ].join(' '),
         },
       },
@@ -62,31 +59,6 @@ const handler = NextAuth({
           if (jwtResponse.ok) {
             const jwtData = await jwtResponse.json();
             user.backendToken = jwtData.token;
-
-            // Step 3: Store Google OAuth tokens for syncing
-            if (account.access_token && account.refresh_token) {
-              const expiresAt = account.expires_at
-                ? new Date(account.expires_at * 1000).toISOString()
-                : new Date(Date.now() + 3600 * 1000).toISOString();
-
-              const scopes = account.scope ? account.scope.split(' ') : [];
-
-              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/connect/google`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${jwtData.token}`,
-                },
-                body: JSON.stringify({
-                  accessToken: account.access_token,
-                  refreshToken: account.refresh_token,
-                  expiresAt,
-                  scopes,
-                }),
-              }).catch(err => {
-                console.error('Failed to store Google OAuth tokens:', err);
-              });
-            }
           }
         } catch (error) {
           console.error('Error syncing user to backend:', error);
