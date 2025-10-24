@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Note, NotesAPI, CreateNoteDto, UpdateNoteDto } from '../../../lib/api';
 import NoteCard from '../../../components/NoteCard';
 import NoteEditor from '../../../components/NoteEditor';
 
-export default function AllNotesPage() {
+export const dynamic = 'force-dynamic';
+
+function AllNotesContent() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -351,6 +353,21 @@ export default function AllNotesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AllNotesPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-8 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading notes...</p>
+        </div>
+      </div>
+    }>
+      <AllNotesContent />
+    </Suspense>
   );
 }
 
