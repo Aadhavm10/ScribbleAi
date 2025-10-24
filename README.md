@@ -702,7 +702,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## Contact & Support
 
 - **GitHub Issues**: [Report a bug or request a feature](https://github.com/Aadhavm10/ScribbleAi/issues)
-- **Email**: aadhavm10@gmail.com
 - **Live Demo**: [scribble-ai-ten.vercel.app](https://scribble-ai-ten.vercel.app)
 
 ---
@@ -710,7 +709,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <div align="center">
 
 **Built for the Elastic Challenge Hackathon**
-
-**Star this repo if you find it useful!**
 
 </div>
