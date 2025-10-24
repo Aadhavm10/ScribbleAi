@@ -1,546 +1,716 @@
-# ScribblyAi - Feature Documentation
+# 🚀 ScribblyAi - AI-Powered Memory Assistant
 
-## ✅ Completed Features (MVP)
+<div align="center">
 
-### Core Note Management
-- ✅ Create, read, update, delete notes
-- ✅ Rich text note editor
-- ✅ Markdown support
-- ✅ Auto-save functionality
-- ✅ Note preview cards
+![ScribblyAi Banner](https://img.shields.io/badge/ScribblyAi-AI%20Memory%20Assistant-6366f1?style=for-the-badge)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-10-E0234E?style=for-the-badge&logo=nestjs)](https://nestjs.com/)
 
-### AI-Powered Features
-- ✅ **Conversational AI Search** (Elastic + Vertex AI)
-  - Natural language queries
-  - Hybrid BM25 + vector search
-  - Source citations
-  - Context-aware responses
-- ✅ **AI Summarization**
-  - Automatic note summaries
-  - Key points extraction
-- ✅ **Task Extraction**
-  - AI-powered task detection
-  - Priority assignment
-  - Due date extraction
-- ✅ **Text Rephrasing**
-  - Formal, casual, concise styles
-  - Powered by Gemini 1.5 Pro
+**🏆 Built for Elastic Challenge Hackathon**
 
-### User Interface
-- ✅ Modern, responsive design
-- ✅ Left sidebar navigation
-- ✅ Search modal (Cmd/Ctrl+K)
-- ✅ Grid/List view toggle
-- ✅ Beautiful gradient theme
-- ✅ Loading states & animations
+*Your intelligent second brain that searches across notes, Gmail, Drive, and more using AI-powered hybrid search*
 
-### Authentication
-- ✅ Google OAuth login
-- ✅ Email/password authentication
-- ✅ Demo mode (skip login)
-- ✅ Session management with NextAuth
+[Live Demo](https://scribble-ai-ten.vercel.app) · [Report Bug](https://github.com/Aadhavm10/ScribbleAi/issues) · [Request Feature](https://github.com/Aadhavm10/ScribbleAi/issues)
 
-### Search & Indexing
-- ✅ Real-time Elasticsearch indexing
-- ✅ Automatic re-indexing on updates
-- ✅ Vector embeddings (768 dimensions)
-- ✅ Hybrid search (keyword + semantic)
-
-## 🚧 In Progress (Hackathon Phase)
-
-### Pages Being Implemented
-
-#### 1. Folders Page
-**Status**: 🚧 In Development
-**Features**:
-- Create, rename, delete folders
-- Drag & drop notes into folders
-- Nested folder structure
-- Color coding & custom icons
-- Folder statistics (note count, last updated)
-- Smart collections (AI-suggested groupings)
-
-**Database Schema**:
-```prisma
-model Folder {
-  id          String   @id @default(uuid())
-  name        String
-  color       String?  // Hex color code
-  icon        String?  // Emoji or icon name
-  parentId    String?  // For nested folders
-  parent      Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
-  children    Folder[] @relation("FolderHierarchy")
-  notes       Note[]
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-```
-
-#### 2. Quick Notes Page
-**Status**: 🚧 In Development
-**Features**:
-- Sticky note style interface
-- Fast capture (no title required)
-- Color-coded cards
-- Pin favorites
-- Drag to reorder
-- Convert to full note
-- Auto-save every 2 seconds
-- Archive old notes
-
-**Use Cases**:
-- Shopping lists
-- Quick thoughts
-- Meeting jotdowns
-- Temporary reminders
-- Links to read later
-
-#### 3. Calendar Page
-**Status**: 🚧 In Development
-**Features**:
-- Monthly calendar view
-- Weekly view
-- Notes grouped by date
-- Visual indicators for note density
-- Click date to see notes
-- Create note for specific date
-
-**Google Calendar Integration** (Phase 1.5):
-- OAuth scope: `calendar.readonly`
-- Read user's calendar events
-- Display events alongside notes
-- Link notes to calendar events
-- Quick "Create meeting note" from event
-
-#### 4. Settings Page
-**Status**: 🚧 In Development
-**Features**:
-
-**Profile Section**:
-- Name, email, avatar
-- Change password
-- Account statistics
-
-**Appearance Section**:
-- Theme toggle (light/dark mode)
-- Accent color picker
-- Font size preferences
-- Compact/comfortable view density
-
-**Connected Accounts**:
-- Google account status
-- Connected services list
-- Disconnect/reconnect options
-
-**Data & Privacy**:
-- Export notes (JSON/Markdown)
-- Import notes
-- Clear all data
-- Delete account
-
-**AI Preferences**:
-- Enable/disable AI features
-- Choose AI model (future)
-- Search result count
-
-**Notifications**:
-- Email notifications
-- Browser notifications
-- Notification preferences
-
-## 📋 Planned Features (Post-Hackathon)
-
-### Google Services Integration
-
-#### Gmail Integration
-**Priority**: High
-**Estimated Time**: 8-12 hours
-
-**Features**:
-- OAuth scope: `gmail.readonly`
-- Search email content
-- Link emails to notes
-- "Create note from email" button
-- Email preview in search results
-- Attachment indexing
-
-**Implementation Notes**:
-```typescript
-// Gmail API client setup
-import { gmail_v1, google } from 'googleapis';
-
-// Search emails
-const gmail = google.gmail({ version: 'v1', auth });
-const messages = await gmail.users.messages.list({
-  userId: 'me',
-  q: 'subject:meeting notes',
-});
-
-// Index in Elasticsearch
-await elasticsearchService.indexEmail({
-  id: message.id,
-  subject: emailData.subject,
-  from: emailData.from,
-  body: emailData.body,
-  date: emailData.date,
-  userId: userId,
-});
-```
-
-#### Google Drive Integration
-**Priority**: High
-**Estimated Time**: 8-12 hours
-
-**Features**:
-- OAuth scope: `drive.readonly`
-- Search Google Docs, Sheets, Slides
-- Preview files in search
-- "Create note from Doc" import
-- File attachment to notes
-- Automatic sync
-
-**Implementation Notes**:
-```typescript
-// Drive API client setup
-const drive = google.drive({ version: 'v3', auth });
-
-// Search files
-const files = await drive.files.list({
-  q: "mimeType='application/vnd.google-apps.document'",
-  fields: 'files(id, name, modifiedTime, webViewLink)',
-});
-
-// Get file content
-const doc = await drive.files.export({
-  fileId: file.id,
-  mimeType: 'text/plain',
-});
-
-// Index in Elasticsearch
-await elasticsearchService.indexDriveFile({
-  id: file.id,
-  name: file.name,
-  content: doc.data,
-  type: 'document',
-  link: file.webViewLink,
-  userId: userId,
-});
-```
-
-#### Unified Search Experience
-**Priority**: Critical for multi-service
-**Features**:
-- Search across Notes + Gmail + Drive + Calendar
-- Tabbed results (All, Notes, Emails, Files, Events)
-- Unified ranking algorithm
-- Cross-reference suggestions
-- "Related content" from different sources
-
-**Search Result Structure**:
-```typescript
-interface UnifiedSearchResult {
-  type: 'note' | 'email' | 'drive_file' | 'calendar_event';
-  id: string;
-  title: string;
-  preview: string;
-  source: string;
-  date: Date;
-  relevanceScore: number;
-  metadata: {
-    // Type-specific fields
-    author?: string;
-    folder?: string;
-    attachments?: number;
-  };
-}
-```
-
-### Real-time Collaboration
-**Priority**: Medium
-**Estimated Time**: 20-30 hours
-
-**Features**:
-- WebSocket-based live editing
-- Multiple users per note
-- Live cursor positions
-- User presence indicators
-- Conflict resolution
-- Version history
-- Comment threads
-- Mention users (@username)
-- Permissions (view/edit/comment)
-
-**Tech Stack**:
-- Socket.io for WebSocket
-- Yjs or Automerge for CRDT
-- Redis for presence tracking
-- Operational Transform (OT) or CRDT
-
-**Implementation Notes**:
-```typescript
-// Backend: NestJS WebSocket Gateway
-@WebSocketGateway()
-export class CollaborationGateway {
-  @SubscribeMessage('join-note')
-  handleJoinNote(client: Socket, noteId: string) {
-    client.join(`note-${noteId}`);
-    // Broadcast user joined
-  }
-
-  @SubscribeMessage('note-update')
-  handleNoteUpdate(client: Socket, data: { noteId: string; delta: any }) {
-    // Apply operational transform
-    // Broadcast to other users
-    client.to(`note-${data.noteId}`).emit('note-updated', data.delta);
-  }
-}
-```
-
-### Additional Features
-
-#### Tags & Smart Organization
-- Auto-tagging with AI
-- Tag-based filtering
-- Tag clouds
-- Related notes suggestions
-
-#### Templates
-- Note templates library
-- Meeting notes template
-- Project planning template
-- Daily journal template
-- Custom templates
-
-#### Sharing & Collaboration (Non-realtime)
-- Share note via link
-- Public/private toggle
-- View-only vs edit permissions
-- Embed notes in websites
-
-#### Mobile Apps
-- React Native apps (iOS/Android)
-- Offline mode
-- Push notifications
-- Camera note capture
-
-#### Browser Extensions
-- Chrome/Firefox extension
-- Clip web pages to notes
-- Quick capture
-- Context menu integration
-
-#### AI Enhancements
-- Voice-to-text notes
-- Image OCR (extract text from images)
-- Smart suggestions
-- Auto-categorization
-- Sentiment analysis
-- Language translation
-
-## 🏗️ Technical Architecture
-
-### Current Stack
-```
-Frontend:
-├── Next.js 15 (App Router)
-├── React 19
-├── TypeScript
-├── Tailwind CSS 4
-└── NextAuth.js
-
-Backend:
-├── NestJS
-├── Prisma ORM
-├── PostgreSQL (Supabase)
-├── Elasticsearch (Hybrid Search)
-└── Google Vertex AI (Gemini + Embeddings)
-
-Infrastructure:
-├── Vercel (Frontend)
-├── Google Cloud Run (Backend)
-└── Supabase (Database)
-```
-
-### Adding New Google Service - Template
-
-**Step 1: Add OAuth Scopes**
-```typescript
-// frontend/app/api/auth/[...nextauth]/route.ts
-GoogleProvider({
-  clientId: process.env.GOOGLE_CLIENT_ID!,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-  authorization: {
-    params: {
-      scope: [
-        'openid',
-        'email',
-        'profile',
-        'https://www.googleapis.com/auth/calendar.readonly',
-        'https://www.googleapis.com/auth/gmail.readonly', // Add new scope
-        'https://www.googleapis.com/auth/drive.readonly',
-      ].join(' '),
-    },
-  },
-}),
-```
-
-**Step 2: Create Service Module**
-```typescript
-// backend/src/google-services/gmail.service.ts
-@Injectable()
-export class GmailService {
-  private gmail: gmail_v1.Gmail;
-
-  constructor() {
-    this.gmail = google.gmail({ version: 'v1' });
-  }
-
-  async searchEmails(query: string, accessToken: string) {
-    const auth = new google.auth.OAuth2();
-    auth.setCredentials({ access_token: accessToken });
-
-    const result = await this.gmail.users.messages.list({
-      userId: 'me',
-      q: query,
-      auth,
-    });
-
-    return result.data.messages;
-  }
-}
-```
-
-**Step 3: Index in Elasticsearch**
-```typescript
-// backend/src/search/indexing.service.ts
-async indexGmailMessage(message: GmailMessage, userId: string) {
-  await this.elasticsearchService.index({
-    index: 'unified_search',
-    id: `email-${message.id}`,
-    document: {
-      type: 'email',
-      userId,
-      subject: message.subject,
-      from: message.from,
-      body: message.body,
-      date: message.date,
-      embedding: await this.generateEmbedding(message.body),
-    },
-  });
-}
-```
-
-**Step 4: Update Search API**
-```typescript
-// Include in hybrid search
-const results = await this.elasticsearchService.search({
-  index: 'unified_search',
-  query: {
-    bool: {
-      must: [{ match: { userId } }],
-      should: [
-        { multi_match: { query, fields: ['title', 'content', 'subject', 'body'] } },
-        { knn: { field: 'embedding', query_vector: embedding } },
-      ],
-    },
-  },
-});
-```
-
-## 📊 Metrics & Analytics
-
-### Current Metrics (Available)
-- Total notes count
-- Recent notes count
-- Search queries
-- AI feature usage
-
-### Planned Metrics
-- User engagement (daily active users)
-- Feature usage statistics
-- Search result relevance
-- AI accuracy metrics
-- Performance monitoring
-
-## 🚀 Deployment Strategy
-
-### Current Deployment
-- Frontend: Vercel (automatic deployments)
-- Backend: Local development
-- Database: Supabase (managed PostgreSQL)
-
-### Production Deployment Plan
-- Frontend: Vercel (✅ Ready)
-- Backend: Google Cloud Run (Docker containerized)
-- Database: Supabase (✅ Production-ready)
-- Elasticsearch: Elastic Cloud (✅ Production-ready)
-- Monitoring: Google Cloud Logging + Sentry
-
-## 📝 Development Notes
-
-### Code Organization
-```
-frontend/
-├── app/                    # Next.js pages
-│   ├── page.tsx           # Home dashboard
-│   ├── notes/             # All notes
-│   ├── folders/           # Folder organization
-│   ├── quick/             # Quick notes
-│   ├── calendar/          # Calendar view
-│   └── settings/          # Settings
-├── components/
-│   ├── layout/            # Sidebar, AppLayout
-│   ├── folders/           # Folder components
-│   ├── calendar/          # Calendar components
-│   └── settings/          # Settings components
-└── lib/
-    ├── api.ts             # API client
-    └── google-api.ts      # Google API client
-
-backend/
-├── src/
-│   ├── notes/             # Notes CRUD
-│   ├── folders/           # Folders CRUD
-│   ├── google-services/   # Gmail, Drive, Calendar
-│   ├── search/            # Unified search
-│   └── collaboration/     # WebSocket (future)
-└── prisma/
-    └── schema.prisma      # Database models
-```
-
-### Best Practices
-- Feature flags for new features
-- Comprehensive error handling
-- Loading states everywhere
-- Optimistic UI updates
-- Proper TypeScript types
-- Unit tests for critical paths
-- E2E tests for user flows
-
-## 🎯 Success Metrics for Hackathon
-
-### Must Have (P0)
-- ✅ All pages functional
-- ✅ No broken links
-- ✅ Smooth demo flow
-- ✅ Error handling
-- ✅ Professional UI
-
-### Nice to Have (P1)
-- ⚪ Google Calendar integration working
-- ⚪ Dark mode toggle
-- ⚪ Data export feature
-- ⚪ Smooth animations
-
-### Future (P2)
-- ⚪ Gmail integration
-- ⚪ Drive integration
-- ⚪ Real-time collaboration
+</div>
 
 ---
 
-**Last Updated**: October 22, 2024
-**Status**: 🚧 Active Development
-**Target**: Hackathon Ready
+## 📖 Table of Contents
+
+- [Why We Built This](#-why-we-built-this)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [How It Works](#-how-it-works)
+- [Future Integrations](#-future-integrations)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
+
+## 💡 Why We Built This
+
+### The Problem
+
+In today's digital world, our information is scattered across multiple platforms:
+- 📝 Notes in various apps
+- ✉️ Important emails in Gmail
+- 📄 Documents in Google Drive
+- 📅 Events in Google Calendar
+
+**The result?** We waste hours searching for that one piece of information we know exists *somewhere*.
+
+### Our Solution
+
+ScribblyAi is an **AI-powered memory assistant** that:
+1. **Unifies** your data from multiple sources
+2. **Understands** natural language queries using Google Vertex AI
+3. **Searches** intelligently using Elasticsearch hybrid search (BM25 + vector embeddings)
+4. **Answers** conversationally with source citations
+
+### Hackathon Goals
+
+Built for the **Elastic Challenge Hackathon**, ScribblyAi showcases:
+- ✅ **Hybrid Search**: Combining keyword (BM25) and semantic (vector) search
+- ✅ **AI Integration**: Google Vertex AI for embeddings and conversational responses
+- ✅ **Multi-source Search**: Notes + Gmail + Google Drive in one place
+- ✅ **Real-time Indexing**: Automatic content synchronization
+- ✅ **Production-Ready**: Fully deployed and functional
+
+---
+
+## ✨ Features
+
+### 🔍 **Intelligent Search**
+- **Conversational AI Search**: Ask questions in natural language
+- **Hybrid Search Engine**: BM25 keyword + 768-dimension vector embeddings
+- **Multi-source Results**: Search across notes, Gmail, and Google Drive
+- **Source Citations**: Always know where information came from
+- **Context-Aware**: Maintains conversation history for follow-up questions
+
+### 📝 **Smart Note Management**
+- **Rich Text Editor**: Beautiful, responsive note editing
+- **AI-Powered Features**:
+  - 🤖 Automatic summarization
+  - ✅ Task extraction with priorities
+  - ✍️ Text rephrasing (formal/casual/concise)
+- **Folder Organization**: Hierarchical folders with custom colors & icons
+- **Quick Notes**: Sticky note-style rapid capture
+- **Calendar View**: Timeline-based note browsing
+
+### 🔐 **Secure Authentication**
+- Google OAuth 2.0 integration
+- Email/password authentication
+- Secure token encryption (AES-256-GCM)
+- Session management with NextAuth.js
+
+### 🌐 **Google Services Integration**
+- **Gmail**: Search email content, sync recent messages
+- **Google Drive**: Index documents and files
+- **Google Docs**: Full-text search across Docs
+- **Automatic Sync**: Hourly background synchronization
+
+### 🎨 **Modern UI/UX**
+- Responsive design (mobile, tablet, desktop)
+- Beautiful gradient themes
+- Global search modal (⌘K / Ctrl+K)
+- Smooth animations and transitions
+- Loading states and error handling
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+| Technology | Purpose |
+|------------|---------|
+| **Next.js 15** | React framework with App Router |
+| **React 19** | UI library |
+| **TypeScript** | Type safety |
+| **Tailwind CSS 4** | Styling |
+| **NextAuth.js** | Authentication |
+| **React Big Calendar** | Calendar view |
+
+### Backend
+| Technology | Purpose |
+|------------|---------|
+| **NestJS** | Node.js framework |
+| **Prisma ORM** | Database toolkit |
+| **PostgreSQL** | Relational database |
+| **Elasticsearch** | Hybrid search engine |
+| **Google Vertex AI** | Gemini LLM + embeddings |
+| **googleapis** | Google APIs integration |
+
+### Infrastructure
+| Service | Purpose |
+|---------|---------|
+| **Vercel** | Frontend hosting |
+| **Railway** | Backend hosting |
+| **Supabase** | Managed PostgreSQL |
+| **Elastic Cloud** | Managed Elasticsearch |
+| **Google Cloud** | Vertex AI, OAuth |
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         USER INTERFACE                           │
+│  Next.js 15 + React 19 + Tailwind CSS (Vercel)                 │
+└────────────────────┬────────────────────────────────────────────┘
+                     │
+                     │ REST API
+                     │
+┌────────────────────▼────────────────────────────────────────────┐
+│                      BACKEND (NestJS)                            │
+│                     Railway / Cloud Run                          │
+│                                                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   Notes      │  │   Folders    │  │   Search     │          │
+│  │   Module     │  │   Module     │  │   Module     │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘          │
+│                                                                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │   AI         │  │  Connectors  │  │   Auth       │          │
+│  │   Module     │  │   Module     │  │   Module     │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘          │
+└───────┬──────────────┬──────────────┬─────────────────┬─────────┘
+        │              │              │                 │
+        │              │              │                 │
+┌───────▼─────┐ ┌──────▼──────┐ ┌────▼─────┐  ┌───────▼────────┐
+│  PostgreSQL │ │Elasticsearch│ │ Vertex AI│  │ Google APIs    │
+│  (Supabase) │ │(Elastic Cl.)│ │ Gemini   │  │ Gmail/Drive    │
+└─────────────┘ └─────────────┘ └──────────┘  └────────────────┘
+```
+
+### Data Flow
+
+1. **User Creates Note** → Saved to PostgreSQL → Generates embedding via Vertex AI → Indexed in Elasticsearch
+2. **User Searches** → Hybrid query (BM25 + vector) → Elasticsearch returns results → Gemini generates conversational response
+3. **Google Integration** → OAuth tokens stored (encrypted) → Periodic sync fetches Gmail/Drive → Content indexed in Elasticsearch
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** 20+
+- **Git**
+- **PostgreSQL** (or use Supabase)
+- **Google Cloud Project** (for OAuth and Vertex AI)
+- **Elastic Cloud Account** (for Elasticsearch)
+
+### Installation
+
+#### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Aadhavm10/ScribbleAi.git
+cd ScribbleAi
+```
+
+#### 2️⃣ Setup Backend
+
+```bash
+cd backend
+npm install
+```
+
+**Create `backend/.env`:**
+
+```env
+# Database
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require"
+
+# Server
+PORT=4000
+NODE_ENV=development
+SKIP_PRISMA=false
+
+# Google Cloud
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+GCP_PROJECT_ID=your-project-id
+VERTEX_AI_LOCATION=us-central1
+
+# Elasticsearch
+ELASTICSEARCH_URL=https://your-cluster.es.region.gcp.elastic.cloud:443
+ELASTICSEARCH_API_KEY=your-api-key
+
+# Token Encryption (generate with: openssl rand -base64 32)
+TOKEN_ENCRYPTION_KEY=your-base64-encoded-key
+```
+
+**Run Database Migration:**
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+#### 3️⃣ Setup Frontend
+
+```bash
+cd ../frontend
+npm install
+```
+
+**Create `frontend/.env.local`:**
+
+```env
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-here  # Generate with: openssl rand -base64 32
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+
+# Database (for NextAuth)
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:6543/postgres?pgbouncer=true"
+
+# API
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
+
+**Generate Prisma Client:**
+
+```bash
+npx prisma generate --schema=../backend/prisma/schema.prisma
+```
+
+#### 4️⃣ Configure Google Cloud
+
+1. **Create Project**: https://console.cloud.google.com/
+2. **Enable APIs**:
+   - Gmail API
+   - Google Drive API
+   - Google Docs API
+   - Vertex AI API
+3. **Configure OAuth Consent Screen**:
+   - User Type: External
+   - Add scopes:
+     - `openid`
+     - `email`
+     - `profile`
+     - `gmail.readonly`
+     - `drive.readonly`
+     - `documents.readonly`
+4. **Create OAuth 2.0 Client**:
+   - Type: Web application
+   - Authorized redirect URIs:
+     - `http://localhost:3000/api/auth/callback/google`
+     - `https://your-domain.vercel.app/api/auth/callback/google`
+5. **Add Test Users** (during development):
+   - OAuth Consent Screen → Test users → Add your email
+
+#### 5️⃣ Setup Elasticsearch
+
+1. **Create Cluster**: https://cloud.elastic.co/
+2. **Choose**: Elastic Cloud Serverless
+3. **Copy**: Cloud ID and API Key
+4. **Add to** `backend/.env`
+
+#### 6️⃣ Run the Application
+
+**Terminal 1 (Backend):**
+```bash
+cd backend
+npm run start:dev
+```
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm run dev
+```
+
+**Open Browser:**
+```
+http://localhost:3000
+```
+
+---
+
+## 📁 Project Structure
+
+```
+ScribblyAi/
+├── backend/                    # NestJS Backend
+│   ├── src/
+│   │   ├── main.ts            # Entry point
+│   │   ├── app.module.ts      # Root module
+│   │   │
+│   │   ├── notes/             # Notes CRUD
+│   │   │   ├── notes.controller.ts
+│   │   │   ├── notes.service.ts
+│   │   │   └── notes.module.ts
+│   │   │
+│   │   ├── folders/           # Folder management
+│   │   │   ├── folders.controller.ts
+│   │   │   ├── folders.service.ts
+│   │   │   └── folders.module.ts
+│   │   │
+│   │   ├── ai/                # AI features (summarize, rephrase, tasks)
+│   │   │   ├── ai.controller.ts
+│   │   │   ├── ai.service.ts
+│   │   │   └── ai.module.ts
+│   │   │
+│   │   ├── search/            # Hybrid search
+│   │   │   ├── search.controller.ts
+│   │   │   ├── search.service.ts         # Hybrid search logic
+│   │   │   ├── indexing.service.ts       # Elasticsearch indexing
+│   │   │   ├── conversational.service.ts # AI conversations
+│   │   │   └── search.module.ts
+│   │   │
+│   │   ├── connectors/        # Google integrations
+│   │   │   ├── connectors.controller.ts
+│   │   │   ├── google.service.ts         # Gmail/Drive sync
+│   │   │   ├── sync-scheduler.service.ts # Hourly sync cron
+│   │   │   └── connectors.module.ts
+│   │   │
+│   │   ├── elasticsearch/     # Elasticsearch client
+│   │   │   ├── elasticsearch.service.ts
+│   │   │   └── elasticsearch.module.ts
+│   │   │
+│   │   ├── vertex-ai/         # Vertex AI client
+│   │   │   ├── vertex-ai.service.ts
+│   │   │   └── vertex-ai.module.ts
+│   │   │
+│   │   └── prisma/            # Prisma ORM
+│   │       ├── prisma.service.ts
+│   │       └── prisma.module.ts
+│   │
+│   ├── prisma/
+│   │   └── schema.prisma      # Database schema
+│   │
+│   ├── Dockerfile             # Docker config
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/                  # Next.js Frontend
+│   ├── app/
+│   │   ├── layout.tsx         # Root layout
+│   │   ├── page.tsx           # Redirect to dashboard
+│   │   │
+│   │   ├── (dashboard)/       # Authenticated routes
+│   │   │   ├── layout.tsx     # Dashboard layout with sidebar
+│   │   │   ├── dashboard/
+│   │   │   │   └── page.tsx   # Main dashboard
+│   │   │   ├── notes/
+│   │   │   │   └── page.tsx   # All notes grid
+│   │   │   ├── search/
+│   │   │   │   └── page.tsx   # AI search page
+│   │   │   ├── folders/
+│   │   │   │   └── page.tsx   # Folder management
+│   │   │   ├── connectors/
+│   │   │   │   └── page.tsx   # Google integrations
+│   │   │   ├── calendar/
+│   │   │   │   └── page.tsx   # Calendar view
+│   │   │   └── settings/
+│   │   │       └── page.tsx   # User settings
+│   │   │
+│   │   ├── auth/              # Authentication pages
+│   │   │   ├── signin/
+│   │   │   │   └── page.tsx
+│   │   │   ├── signup/
+│   │   │   │   └── page.tsx
+│   │   │   └── callback/
+│   │   │       └── page.tsx   # OAuth callback
+│   │   │
+│   │   ├── api/
+│   │   │   └── auth/
+│   │   │       └── [...nextauth]/
+│   │   │           └── route.ts # NextAuth config
+│   │   │
+│   │   ├── globals.css        # Global styles
+│   │   └── providers.tsx      # Context providers
+│   │
+│   ├── components/
+│   │   ├── layout/
+│   │   │   └── AppLayout.tsx  # Sidebar + navigation
+│   │   ├── NoteCard.tsx       # Note preview card
+│   │   ├── NoteEditor.tsx     # Note editing modal
+│   │   ├── MiniCalendar.tsx   # Dashboard calendar
+│   │   └── ConversationalSearch.tsx # AI search modal
+│   │
+│   ├── contexts/
+│   │   └── AuthContext.tsx    # Authentication context
+│   │
+│   ├── lib/
+│   │   └── api.ts             # API client (NotesAPI, SearchAPI, etc.)
+│   │
+│   ├── types/
+│   │   └── next-auth.d.ts     # NextAuth type extensions
+│   │
+│   ├── package.json
+│   ├── next.config.ts
+│   ├── tailwind.config.js
+│   └── tsconfig.json
+│
+├── LICENSE                    # MIT License
+├── README.md                  # This file
+└── docker-compose.yml         # Local PostgreSQL (optional)
+```
+
+---
+
+## 🔍 How It Works
+
+### 1. **Note Creation & Indexing**
+
+```typescript
+// User creates a note
+const note = await NotesAPI.createNote({
+  title: "Meeting Notes",
+  content: "Discussed Q1 roadmap...",
+  userId: user.id
+});
+
+// Backend flow:
+// 1. Save to PostgreSQL via Prisma
+// 2. Generate embedding via Vertex AI (768 dimensions)
+// 3. Index in Elasticsearch with both text and vector
+await elasticsearchService.index({
+  index: 'notes',
+  document: {
+    noteId: note.id,
+    userId: user.id,
+    title: note.title,
+    content: note.content,
+    content_embedding: embedding, // Vector from Vertex AI
+    updatedAt: note.updatedAt,
+  }
+});
+```
+
+### 2. **Hybrid Search**
+
+```typescript
+// User searches: "What did we discuss about the roadmap?"
+const results = await SearchAPI.hybridSearch(query, userId);
+
+// Backend flow:
+// 1. Generate query embedding
+const queryEmbedding = await vertexAi.generateEmbedding(query);
+
+// 2. Keyword search (BM25)
+const keywordResults = await elasticsearch.search({
+  query: {
+    multi_match: {
+      query,
+      fields: ['title^3', 'content'],
+      fuzziness: 'AUTO'
+    }
+  }
+});
+
+// 3. Vector search (cosine similarity)
+const vectorResults = await elasticsearch.search({
+  query: {
+    script_score: {
+      query: { match_all: {} },
+      script: {
+        source: "cosineSimilarity(params.queryVector, 'content_embedding') + 1.0",
+        params: { queryVector: queryEmbedding }
+      }
+    }
+  }
+});
+
+// 4. Merge with Reciprocal Rank Fusion (RRF)
+const merged = reciprocalRankFusion(keywordResults, vectorResults);
+```
+
+### 3. **Conversational AI**
+
+```typescript
+// User asks: "Summarize the key points"
+const response = await SearchAPI.conversationalSearch(query, userId);
+
+// Backend flow:
+// 1. Perform hybrid search to find relevant notes
+// 2. Build context from top results
+// 3. Call Vertex AI Gemini with context
+const aiResponse = await vertexAi.generateResponse({
+  prompt: `Based on these notes: ${context}\n\nUser question: ${query}`,
+  temperature: 0.7
+});
+
+// 4. Return response with source citations
+return {
+  response: aiResponse.text,
+  sources: topResults,
+  conversationId: conversation.id
+};
+```
+
+### 4. **Google Integration**
+
+```typescript
+// User connects Google account
+// 1. OAuth flow stores encrypted tokens in SourceAccount table
+await googleService.upsertSourceAccount({
+  userId: user.id,
+  accessToken: encrypt(tokens.access_token),
+  refreshToken: encrypt(tokens.refresh_token),
+  expiresAt: tokens.expiry_date
+});
+
+// 2. Periodic sync (hourly cron job)
+@Cron(CronExpression.EVERY_HOUR)
+async syncAllUsers() {
+  // Gmail sync
+  const emails = await gmail.users.messages.list({ userId: 'me' });
+  for (const email of emails) {
+    const content = await extractEmailContent(email);
+    const embedding = await vertexAi.generateEmbedding(content);
+    await elasticsearch.index({
+      provider: 'gmail',
+      itemType: 'email',
+      content,
+      embedding
+    });
+  }
+
+  // Drive sync (similar process)
+}
+```
+
+---
+
+## 🔮 Future Integrations
+
+### Short-term (1-2 months)
+
+#### 📅 **Google Calendar Integration**
+- Sync calendar events
+- Create notes from meetings
+- Show events in timeline view
+- Smart reminders
+
+#### 🌙 **Dark Mode**
+- System preference detection
+- Manual toggle
+- Persistent user preference
+
+#### 📤 **Export/Import**
+- Export notes as JSON/Markdown
+- Import from other note apps
+- Backup automation
+
+### Medium-term (3-6 months)
+
+#### 📱 **Mobile Apps**
+- React Native iOS/Android apps
+- Offline mode with sync
+- Push notifications
+- Camera OCR for note capture
+
+#### 🌐 **Browser Extension**
+- Chrome/Firefox/Safari extensions
+- Clip web pages to notes
+- Quick capture popup
+- Context menu integration
+
+#### 🏷️ **Smart Tags & Organization**
+- AI-powered auto-tagging
+- Tag-based filtering
+- Related notes suggestions
+- Tag clouds and analytics
+
+### Long-term (6+ months)
+
+#### 👥 **Real-time Collaboration**
+- Live multi-user editing (CRDT)
+- Cursor positions and presence
+- Comment threads
+- Mention users (@username)
+- Granular permissions
+
+#### 🎤 **Voice & Vision**
+- Voice-to-text notes
+- Image OCR (extract text from photos)
+- Diagram recognition
+- Audio note recordings
+
+#### 🧠 **Advanced AI**
+- Sentiment analysis
+- Language translation (50+ languages)
+- Smart suggestions and auto-complete
+- Meeting transcription & summarization
+- Knowledge graph visualization
+
+#### 🔗 **More Integrations**
+- Slack messages
+- Discord channels
+- Notion import
+- Obsidian sync
+- Evernote migration
+- Microsoft 365 (Outlook, OneDrive)
+- Dropbox
+- GitHub issues/PRs
+- Trello boards
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+### Development Workflow
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Make your changes**
+4. **Test thoroughly**
+   ```bash
+   # Backend tests
+   cd backend && npm test
+   
+   # Frontend tests
+   cd frontend && npm test
+   ```
+5. **Commit with conventional commits**
+   ```bash
+   git commit -m "feat: add amazing feature"
+   ```
+6. **Push to your fork**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+7. **Open a Pull Request**
+
+### Commit Convention
+
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation changes
+- `style:` Code style changes (formatting)
+- `refactor:` Code refactoring
+- `test:` Test changes
+- `chore:` Build/tooling changes
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Elastic** for the amazing search platform and hackathon opportunity
+- **Google Cloud** for Vertex AI and generous free tier
+- **Supabase** for managed PostgreSQL hosting
+- **Vercel** for seamless Next.js deployment
+- **Railway** for hassle-free backend hosting
+
+---
+
+## 📞 Contact & Support
+
+- **GitHub Issues**: [Report a bug or request a feature](https://github.com/Aadhavm10/ScribbleAi/issues)
+- **Email**: aadhavm10@gmail.com
+- **Live Demo**: [scribble-ai-ten.vercel.app](https://scribble-ai-ten.vercel.app)
+
+---
+
+<div align="center">
+
+**Built with ❤️ for the Elastic Challenge Hackathon**
+
+⭐ **Star this repo if you find it useful!** ⭐
+
+</div>
