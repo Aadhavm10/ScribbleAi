@@ -5,7 +5,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: process.env.NODE_ENV === 'production' 
-      ? ['https://scribble-ai.vercel.app', 'https://scribble-ai-*.vercel.app', /\.vercel\.app$/] 
+      ? ['https://scribbly-ai.vercel.app', 'https://scribble-ai-ten.vercel.app', /\.vercel\.app$/] 
       : [/localhost:\d+$/],
     credentials: true,
   });
