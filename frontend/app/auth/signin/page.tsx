@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Squares from '@/components/Squares';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -44,15 +45,21 @@ export default function SignIn() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-      {/* Floating background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400 to-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-yellow-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-gradient-to-br from-green-400 to-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+    <div className="relative min-h-screen overflow-hidden bg-[#060010]">
+      {/* Animated Squares Background */}
+      <div className="absolute inset-0 z-0">
+        <Squares 
+          speed={0.5}
+          squareSize={40}
+          direction="diagonal"
+          borderColor="#333"
+          hoverFillColor="#6366f1"
+        />
       </div>
 
-      <div className="w-full max-w-md">
+      {/* Content Overlay */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -60,10 +67,10 @@ export default function SignIn() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-white">
             Welcome Back
           </h1>
-          <p className="text-gray-600 mt-2">Sign in to your ScribblyAi account</p>
+          <p className="text-gray-400 mt-2">Sign in to your ScribblyAi account</p>
         </div>
 
         {/* Sign In Form */}
@@ -159,6 +166,7 @@ export default function SignIn() {
               </Link>
             </p>
           </div>
+        </div>
         </div>
       </div>
     </div>
