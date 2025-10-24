@@ -1,4 +1,4 @@
-# 🚀 ScribblyAi - AI-Powered Memory Assistant
+# ScribblyAi - AI-Powered Memory Assistant
 
 <div align="center">
 
@@ -7,7 +7,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-10-E0234E?style=for-the-badge&logo=nestjs)](https://nestjs.com/)
 
-**🏆 Built for Elastic Challenge Hackathon**
+**Built for Elastic Challenge Hackathon**
 
 *Your intelligent second brain that searches across notes, Gmail, Drive, and more using AI-powered hybrid search*
 
@@ -17,30 +17,30 @@
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [Why We Built This](#-why-we-built-this)
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
-- [Project Structure](#-project-structure)
-- [How It Works](#-how-it-works)
-- [Future Integrations](#-future-integrations)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Why We Built This](#why-we-built-this)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [How It Works](#how-it-works)
+- [Future Integrations](#future-integrations)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 💡 Why We Built This
+## Why We Built This
 
 ### The Problem
 
 In today's digital world, our information is scattered across multiple platforms:
-- 📝 Notes in various apps
-- ✉️ Important emails in Gmail
-- 📄 Documents in Google Drive
-- 📅 Events in Google Calendar
+- Notes in various apps
+- Important emails in Gmail
+- Documents in Google Drive
+- Events in Google Calendar
 
 **The result?** We waste hours searching for that one piece of information we know exists *somewhere*.
 
@@ -55,55 +55,55 @@ ScribblyAi is an **AI-powered memory assistant** that:
 ### Hackathon Goals
 
 Built for the **Elastic Challenge Hackathon**, ScribblyAi showcases:
-- ✅ **Hybrid Search**: Combining keyword (BM25) and semantic (vector) search
-- ✅ **AI Integration**: Google Vertex AI for embeddings and conversational responses
-- ✅ **Multi-source Search**: Notes + Gmail + Google Drive in one place
-- ✅ **Real-time Indexing**: Automatic content synchronization
-- ✅ **Production-Ready**: Fully deployed and functional
+- **Hybrid Search**: Combining keyword (BM25) and semantic (vector) search
+- **AI Integration**: Google Vertex AI for embeddings and conversational responses
+- **Multi-source Search**: Notes + Gmail + Google Drive in one place
+- **Real-time Indexing**: Automatic content synchronization
+- **Production-Ready**: Fully deployed and functional
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔍 **Intelligent Search**
+### Intelligent Search
 - **Conversational AI Search**: Ask questions in natural language
 - **Hybrid Search Engine**: BM25 keyword + 768-dimension vector embeddings
 - **Multi-source Results**: Search across notes, Gmail, and Google Drive
 - **Source Citations**: Always know where information came from
 - **Context-Aware**: Maintains conversation history for follow-up questions
 
-### 📝 **Smart Note Management**
+### Smart Note Management
 - **Rich Text Editor**: Beautiful, responsive note editing
 - **AI-Powered Features**:
-  - 🤖 Automatic summarization
-  - ✅ Task extraction with priorities
-  - ✍️ Text rephrasing (formal/casual/concise)
+  - Automatic summarization
+  - Task extraction with priorities
+  - Text rephrasing (formal/casual/concise)
 - **Folder Organization**: Hierarchical folders with custom colors & icons
 - **Quick Notes**: Sticky note-style rapid capture
 - **Calendar View**: Timeline-based note browsing
 
-### 🔐 **Secure Authentication**
+### Secure Authentication
 - Google OAuth 2.0 integration
 - Email/password authentication
 - Secure token encryption (AES-256-GCM)
 - Session management with NextAuth.js
 
-### 🌐 **Google Services Integration**
+### Google Services Integration
 - **Gmail**: Search email content, sync recent messages
 - **Google Drive**: Index documents and files
 - **Google Docs**: Full-text search across Docs
 - **Automatic Sync**: Hourly background synchronization
 
-### 🎨 **Modern UI/UX**
+### Modern UI/UX
 - Responsive design (mobile, tablet, desktop)
 - Beautiful gradient themes
-- Global search modal (⌘K / Ctrl+K)
+- Global search modal (Cmd+K / Ctrl+K)
 - Smooth animations and transitions
 - Loading states and error handling
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -136,7 +136,7 @@ Built for the **Elastic Challenge Hackathon**, ScribblyAi showcases:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -176,7 +176,7 @@ Built for the **Elastic Challenge Hackathon**, ScribblyAi showcases:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -188,14 +188,14 @@ Built for the **Elastic Challenge Hackathon**, ScribblyAi showcases:
 
 ### Installation
 
-#### 1️⃣ Clone the Repository
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Aadhavm10/ScribbleAi.git
 cd ScribbleAi
 ```
 
-#### 2️⃣ Setup Backend
+#### 2. Setup Backend
 
 ```bash
 cd backend
@@ -235,7 +235,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-#### 3️⃣ Setup Frontend
+#### 3. Setup Frontend
 
 ```bash
 cd ../frontend
@@ -266,7 +266,7 @@ NEXT_PUBLIC_API_URL=http://localhost:4000
 npx prisma generate --schema=../backend/prisma/schema.prisma
 ```
 
-#### 4️⃣ Configure Google Cloud
+#### 4. Configure Google Cloud
 
 1. **Create Project**: https://console.cloud.google.com/
 2. **Enable APIs**:
@@ -291,14 +291,14 @@ npx prisma generate --schema=../backend/prisma/schema.prisma
 5. **Add Test Users** (during development):
    - OAuth Consent Screen → Test users → Add your email
 
-#### 5️⃣ Setup Elasticsearch
+#### 5. Setup Elasticsearch
 
 1. **Create Cluster**: https://cloud.elastic.co/
 2. **Choose**: Elastic Cloud Serverless
 3. **Copy**: Cloud ID and API Key
 4. **Add to** `backend/.env`
 
-#### 6️⃣ Run the Application
+#### 6. Run the Application
 
 **Terminal 1 (Backend):**
 ```bash
@@ -319,7 +319,7 @@ http://localhost:3000
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ScribblyAi/
@@ -442,7 +442,7 @@ ScribblyAi/
 
 ---
 
-## 🔍 How It Works
+## How It Works
 
 ### 1. **Note Creation & Indexing**
 
@@ -566,41 +566,41 @@ async syncAllUsers() {
 
 ---
 
-## 🔮 Future Integrations
+## Future Integrations
 
 ### Short-term (1-2 months)
 
-#### 📅 **Google Calendar Integration**
+#### Google Calendar Integration
 - Sync calendar events
 - Create notes from meetings
 - Show events in timeline view
 - Smart reminders
 
-#### 🌙 **Dark Mode**
+#### Dark Mode
 - System preference detection
 - Manual toggle
 - Persistent user preference
 
-#### 📤 **Export/Import**
+#### Export/Import
 - Export notes as JSON/Markdown
 - Import from other note apps
 - Backup automation
 
 ### Medium-term (3-6 months)
 
-#### 📱 **Mobile Apps**
+#### Mobile Apps
 - React Native iOS/Android apps
 - Offline mode with sync
 - Push notifications
 - Camera OCR for note capture
 
-#### 🌐 **Browser Extension**
+#### Browser Extension
 - Chrome/Firefox/Safari extensions
 - Clip web pages to notes
 - Quick capture popup
 - Context menu integration
 
-#### 🏷️ **Smart Tags & Organization**
+#### Smart Tags & Organization
 - AI-powered auto-tagging
 - Tag-based filtering
 - Related notes suggestions
@@ -608,27 +608,27 @@ async syncAllUsers() {
 
 ### Long-term (6+ months)
 
-#### 👥 **Real-time Collaboration**
+#### Real-time Collaboration
 - Live multi-user editing (CRDT)
 - Cursor positions and presence
 - Comment threads
 - Mention users (@username)
 - Granular permissions
 
-#### 🎤 **Voice & Vision**
+#### Voice & Vision
 - Voice-to-text notes
 - Image OCR (extract text from photos)
 - Diagram recognition
 - Audio note recordings
 
-#### 🧠 **Advanced AI**
+#### Advanced AI
 - Sentiment analysis
 - Language translation (50+ languages)
 - Smart suggestions and auto-complete
 - Meeting transcription & summarization
 - Knowledge graph visualization
 
-#### 🔗 **More Integrations**
+#### More Integrations
 - Slack messages
 - Discord channels
 - Notion import
@@ -641,7 +641,7 @@ async syncAllUsers() {
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Here's how to get started:
 
@@ -649,12 +649,12 @@ We welcome contributions! Here's how to get started:
 
 1. **Fork the repository**
 2. **Create a feature branch**
-   ```bash
+```bash
    git checkout -b feature/amazing-feature
-   ```
+```
 3. **Make your changes**
 4. **Test thoroughly**
-   ```bash
+```bash
    # Backend tests
    cd backend && npm test
    
@@ -662,11 +662,11 @@ We welcome contributions! Here's how to get started:
    cd frontend && npm test
    ```
 5. **Commit with conventional commits**
-   ```bash
+```bash
    git commit -m "feat: add amazing feature"
    ```
 6. **Push to your fork**
-   ```bash
+```bash
    git push origin feature/amazing-feature
    ```
 7. **Open a Pull Request**
@@ -683,13 +683,13 @@ We welcome contributions! Here's how to get started:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Elastic** for the amazing search platform and hackathon opportunity
 - **Google Cloud** for Vertex AI and generous free tier
@@ -699,7 +699,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 📞 Contact & Support
+## Contact & Support
 
 - **GitHub Issues**: [Report a bug or request a feature](https://github.com/Aadhavm10/ScribbleAi/issues)
 - **Email**: aadhavm10@gmail.com
@@ -709,8 +709,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
 
-**Built with ❤️ for the Elastic Challenge Hackathon**
+**Built for the Elastic Challenge Hackathon**
 
-⭐ **Star this repo if you find it useful!** ⭐
+**Star this repo if you find it useful!**
 
 </div>
