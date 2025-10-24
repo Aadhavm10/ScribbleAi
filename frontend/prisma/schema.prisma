@@ -1,0 +1,245 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  password      String?        // For local authentication (optional for OAuth users)
+  image         String?        // For OAuth profile pictures
+  notes         Note[]
+  folders       Folder[]
+  quickNotes    QuickNote[]
+  tags          Tag[]
+  searches      Search[]
+  conversations Conversation[]
+  calendars     Calendar[]
+  events        CalendarEvent[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Note {
+  id               String          @id @default(cuid())
+  title            String
+  content          String          @db.Text
+  userId           String
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId         String?
+  folder           Folder?         @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  tags             NoteTag[]
+  linkedEvents     CalendarEvent[] // Events linked to this note
+  embedding        String?         // Elasticsearch document ID
+  embeddingVersion Int             @default(1)
+  viewCount        Int             @default(0)
+  lastViewedAt     DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([userId, updatedAt])
+  @@index([userId, createdAt])
+  @@index([folderId])
+}
+
+model Tag {
+  id        String     @id @default(cuid())
+  name      String
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     NoteTag[]
+  events    EventTag[]
+  color     String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model NoteTag {
+  noteId String
+  tagId  String
+  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+}
+
+model Search {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  query         String
+  resultCount   Int
+  clickedNoteId String?
+  executionTime Int      // milliseconds
+  createdAt     DateTime @default(now())
+  
+  @@index([userId, createdAt])
+}
+
+model Conversation {
+  id        String                @id @default(cuid())
+  userId    String
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String?
+  messages  ConversationMessage[]
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  
+  @@index([userId, updatedAt])
+}
+
+model ConversationMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // 'user' or 'assistant'
+  content        String       @db.Text
+  sources        Json?        // Array of {noteId, title, excerpt}
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model Folder {
+  id        String    @id @default(cuid())
+  name      String
+  color     String?   // Hex color code (e.g., "#FF5733")
+  icon      String?   // Emoji or icon name
+  parentId  String?   // For nested folders
+  parent    Folder?   @relation("FolderHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Folder[]  @relation("FolderHierarchy")
+  notes     Note[]
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+model QuickNote {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  color     String   @default("#FEF3C7") // Default yellow sticky note color
+  isPinned  Boolean  @default(false)
+  position  Int      @default(0) // For ordering
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, position])
+  @@index([userId, isPinned])
+}
+
+model SourceAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  provider     String
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  scopes       String[]
+  lastSyncedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model ExternalItem {
+  id          String   @id @default(cuid())
+  userId      String
+  provider    String
+  externalId  String
+  itemType    String
+  title       String?
+  snippet     String?
+  content     String?  @db.Text
+  mimeType    String?
+  webViewUrl  String?
+  modifiedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([provider, externalId, userId])
+  @@index([userId])
+  @@index([externalId])
+}
+
+model Calendar {
+  id                String          @id @default(cuid())
+  name              String
+  description       String?
+  color             String          @default("#3B82F6") // Default blue color
+  isDefault         Boolean         @default(false)
+  isVisible         Boolean         @default(true)
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events            CalendarEvent[]
+  googleCalendarId  String?         // Google Calendar ID for sync
+  syncEnabled       Boolean         @default(false)
+  lastSyncedAt      DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([userId, isDefault])
+}
+
+model CalendarEvent {
+  id               String     @id @default(cuid())
+  title            String
+  description      String?    @db.Text
+  location         String?
+  color            String?
+  startDate        DateTime
+  endDate          DateTime
+  isAllDay         Boolean    @default(false)
+  timezone         String     @default("UTC")
+  recurrenceRule   String?    // RRULE format for recurring events
+  recurrenceEnd    DateTime?
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  calendarId       String
+  calendar         Calendar   @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  linkedNoteId     String?
+  linkedNote       Note?      @relation(fields: [linkedNoteId], references: [id], onDelete: SetNull)
+  tags             EventTag[]
+  reminderMinutes  Int[]      @default([15]) // Minutes before event to remind (e.g., [15, 60, 1440])
+  attendees        Json?      // Array of {email, name, status}
+  googleEventId    String?    // Google Calendar Event ID for sync
+  lastSyncedAt     DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([userId, startDate])
+  @@index([userId, endDate])
+  @@index([calendarId])
+  @@index([linkedNoteId])
+}
+
+model EventTag {
+  eventId String
+  tagId   String
+  event   CalendarEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tag     Tag           @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, tagId])
+}
