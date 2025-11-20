@@ -19,6 +19,7 @@
 
 ## Table of Contents
 
+- [Project Goals](#project-goals)
 - [Why We Built This](#why-we-built-this)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -29,6 +30,28 @@
 - [Future Integrations](#future-integrations)
 - [Contributing](#contributing)
 - [License](#license)
+
+---
+
+## Project Goals
+
+ScribblyAi aims to demonstrate enterprise-grade distributed systems architecture through:
+
+**Core Objectives:**
+- Build a real-time collaborative note-taking platform with live multi-user editing
+- Implement event-driven architecture using Apache Kafka for scalable event streaming
+- Process real-time analytics with Apache Spark Streaming for instant insights
+- Deploy production-ready infrastructure on AWS with proper monitoring and observability
+- Showcase hybrid search combining keyword (BM25) and semantic (vector) search using Elasticsearch
+
+**Technical Learning:**
+- Master distributed systems patterns (event sourcing, CQRS, eventual consistency)
+- Gain hands-on experience with Kafka, Spark, and cloud-native deployment
+- Implement WebSocket-based real-time collaboration at scale
+- Build production-grade monitoring, logging, and alerting systems
+
+**Portfolio Impact:**
+This project demonstrates the technical depth required for senior engineering roles at companies building real-time, distributed platforms like Roblox, Slack, and Notion.
 
 ---
 
