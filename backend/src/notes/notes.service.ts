@@ -7,12 +7,14 @@ export interface CreateNoteDto {
   content: string;
   userId: string;
   tagIds?: string[];
+  sessionCode?: string | null;
 }
 
 export interface UpdateNoteDto {
   title?: string;
   content?: string;
   tagIds?: string[];
+  sessionCode?: string | null;
 }
 
 @Injectable()
@@ -93,7 +95,7 @@ export class NotesService {
       };
     }
     
-    const { title, content, userId, tagIds } = input;
+    const { title, content, userId, tagIds, sessionCode } = input;
     
     // Auto-create user if doesn't exist (for MVP)
     await this.prisma.user.upsert({
@@ -107,6 +109,7 @@ export class NotesService {
         title,
         content,
         userId,
+        sessionCode,
         tags: tagIds && tagIds.length > 0 ? {
           createMany: {
             data: tagIds.map((tagId) => ({ tagId })),
@@ -140,12 +143,13 @@ export class NotesService {
     }
     
     try {
-      const { title, content, tagIds } = input;
+      const { title, content, tagIds, sessionCode } = input;
       const updated = await this.prisma.note.update({
         where: { id },
         data: {
           title,
           content,
+          sessionCode,
           ...(tagIds ? {
             tags: {
               deleteMany: {},
@@ -177,6 +181,17 @@ export class NotesService {
         tags: [],
       };
     }
+  }
+
+  async getNoteBySessionCode(sessionCode: string) {
+    if (!this.isDbAvailable()) {
+      return null;
+    }
+
+    return this.prisma.note.findFirst({
+      where: { sessionCode },
+      include: { tags: { include: { tag: true } } },
+    });
   }
 
   async deleteNote(id: string) {

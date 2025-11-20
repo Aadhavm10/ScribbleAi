@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, NotFoundException } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import type { CreateNoteDto, UpdateNoteDto } from './notes.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -12,6 +12,15 @@ export class NotesController {
   @Get()
   async list(@CurrentUser() user: any) {
     return this.notesService.listNotesByUser(user.id);
+  }
+
+  @Get('session/:code')
+  async getBySessionCode(@Param('code') code: string) {
+    const note = await this.notesService.getNoteBySessionCode(code);
+    if (!note) {
+      throw new NotFoundException('Session not found');
+    }
+    return note;
   }
 
   @Get(':id')

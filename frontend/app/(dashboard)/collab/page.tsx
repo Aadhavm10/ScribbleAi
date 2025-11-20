@@ -66,18 +66,14 @@ export default function CollabPage() {
 
     try {
       setError(null);
-      
-      // Search for notes with this session code
-      const notes = await NotesAPI.getNotes();
-      const sessionNote = notes.find(note => 
-        note.sessionCode === inputCode.toUpperCase()
-      );
+      const code = inputCode.toUpperCase();
+      const sessionNote = await NotesAPI.getNoteBySessionCode(code);
 
       if (sessionNote) {
         setActiveNote(sessionNote);
-        setSessionCode(inputCode.toUpperCase());
+        setSessionCode(code);
       } else {
-        setError(`Session "${inputCode.toUpperCase()}" not found. Make sure the code is correct.`);
+        setError(`Session "${code}" not found. Make sure the code is correct.`);
       }
     } catch (err) {
       console.error('Failed to join session:', err);

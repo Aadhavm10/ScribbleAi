@@ -104,6 +104,18 @@ export class NotesAPI {
     return response.json();
   }
 
+  static async getNoteBySessionCode(sessionCode: string): Promise<Note | null> {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE_URL}/notes/session/${sessionCode}`, { headers });
+    if (response.status === 404) {
+      return null;
+    }
+    if (!response.ok) {
+      throw new Error('Failed to fetch collaboration session');
+    }
+    return response.json();
+  }
+
   static async createNote(note: Omit<CreateNoteDto, 'userId'>): Promise<Note> {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE_URL}/notes`, {
