@@ -40,6 +40,7 @@ export interface Note {
   userId: string;
   folderId?: string | null;
   folder?: Folder | null;
+  sessionCode?: string | null;
   createdAt: string;
   updatedAt: string;
   tags: Array<{
@@ -56,6 +57,7 @@ export interface CreateNoteDto {
   userId: string;
   folderId?: string | null;
   tagIds?: string[];
+  sessionCode?: string | null;
 }
 
 export interface UpdateNoteDto {

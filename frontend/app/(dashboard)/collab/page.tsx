@@ -37,13 +37,15 @@ export default function CollabPage() {
     
     try {
       setError(null);
+      setIsCreating(true);
       const code = generateSessionCode();
       
-      // Create a new collaborative note
+      // Create a new collaborative note with session code
       const note = await NotesAPI.createNote({
         title: `Collab Session ${code}`,
         content: `# Welcome to Collab Session ${code}\n\nShare this code with others to collaborate in real-time!\n\nSession Code: **${code}**\n\nStart typing below...`,
         userId: user.id,
+        sessionCode: code,
       });
 
       setSessionCode(code);
@@ -52,6 +54,7 @@ export default function CollabPage() {
     } catch (err) {
       console.error('Failed to create session:', err);
       setError('Failed to create collaboration session');
+      setIsCreating(false);
     }
   };
 
@@ -64,21 +67,21 @@ export default function CollabPage() {
     try {
       setError(null);
       
-      // Search for notes with this session code in the title
+      // Search for notes with this session code
       const notes = await NotesAPI.getNotes();
       const sessionNote = notes.find(note => 
-        note.title.includes(inputCode.toUpperCase())
+        note.sessionCode === inputCode.toUpperCase()
       );
 
       if (sessionNote) {
         setActiveNote(sessionNote);
         setSessionCode(inputCode.toUpperCase());
       } else {
-        setError('Session not found. Please check the code and try again.');
+        setError(`Session "${inputCode.toUpperCase()}" not found. Make sure the code is correct.`);
       }
     } catch (err) {
       console.error('Failed to join session:', err);
-      setError('Failed to join session');
+      setError('Failed to join session. Please try again.');
     }
   };
 

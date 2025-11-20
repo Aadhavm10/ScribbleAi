@@ -46,12 +46,14 @@ model Note {
   embeddingVersion Int             @default(1)
   viewCount        Int             @default(0)
   lastViewedAt     DateTime?
+  sessionCode      String?         // For collaborative sessions
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
 
   @@index([userId, updatedAt])
   @@index([userId, createdAt])
   @@index([folderId])
+  @@index([sessionCode])
 }
 
 model Tag {
