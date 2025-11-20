@@ -13,6 +13,7 @@ import { FoldersModule } from './folders/folders.module';
 import { ConnectorsModule } from './connectors/connectors.module';
 import { AuthModule } from './auth/auth.module';
 import { CalendarModule } from './calendar/calendar.module';
+import { RealtimeModule } from './realtime/realtime.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CalendarModule } from './calendar/calendar.module';
     FoldersModule,
     ConnectorsModule,
     CalendarModule,
+    RealtimeModule,
   ],
   controllers: [AppController, DevController],
   providers: [AppService],

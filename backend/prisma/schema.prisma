@@ -243,3 +243,48 @@ model EventTag {
 
   @@id([eventId, tagId])
 }
+
+// Real-time collaboration models
+model NoteSession {
+  id        String   @id @default(cuid())
+  noteId    String
+  userId    String
+  userName  String
+  userEmail String
+  socketId  String   @unique
+  isActive  Boolean  @default(true)
+  lastSeen  DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([noteId, isActive])
+  @@index([userId])
+  @@index([socketId])
+}
+
+model NoteEdit {
+  id        String   @id @default(cuid())
+  noteId    String
+  userId    String
+  content   String   @db.Text
+  title     String?
+  editType  String   // 'create', 'update', 'delete'
+  metadata  Json?    // Store additional info like cursor position, selection
+  createdAt DateTime @default(now())
+
+  @@index([noteId, createdAt])
+  @@index([userId])
+}
+
+// Analytics models
+model AnalyticsMetric {
+  id          String   @id @default(cuid())
+  metricName  String   // 'active_users_5min', 'notes_created_hourly', etc.
+  value       Float
+  windowStart DateTime
+  windowEnd   DateTime
+  metadata    Json?    // Additional metric-specific data
+  createdAt   DateTime @default(now())
+
+  @@index([metricName, windowStart])
+  @@index([createdAt])
+}
