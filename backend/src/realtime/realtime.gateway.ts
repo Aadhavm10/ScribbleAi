@@ -99,7 +99,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       if (!this.activeUsers.has(noteId)) {
         this.activeUsers.set(noteId, new Set());
       }
-      this.activeUsers.get(noteId).add(client.id);
+      this.activeUsers.get(noteId)!.add(client.id);
 
       // Create or update session in database
       await this.prisma.noteSession.upsert({
