@@ -158,19 +158,19 @@ function AllNotesContent() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-slate-50 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">
               All Notes
             </h1>
-            <p className="text-gray-600">Manage and organize your notes</p>
+            <p className="text-slate-600">Manage and organize your notes</p>
           </div>
           <button
             onClick={() => setIsCreating(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -180,23 +180,23 @@ function AllNotesContent() {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search notes..."
-              className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2.5 pl-11 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
             />
-            <svg className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'updated' | 'created' | 'title')}
-            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
           >
             <option value="updated">Sort by Updated</option>
             <option value="created">Sort by Created</option>
@@ -207,7 +207,7 @@ function AllNotesContent() {
 
       {/* Error Display */}
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl">
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-lg">
           <div className="flex items-center space-x-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -220,16 +220,16 @@ function AllNotesContent() {
       {/* Notes Grid */}
       {filteredNotes.length === 0 ? (
         <div className="text-center py-16">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-12 max-w-md mx-auto">
-            <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 max-w-md mx-auto">
+            <div className="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
               {searchQuery ? 'No notes found' : 'No notes yet'}
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-600 mb-6">
               {searchQuery
                 ? 'Try adjusting your search query'
                 : 'Get started by creating your first note'}
@@ -237,7 +237,7 @@ function AllNotesContent() {
             {!searchQuery && (
               <button
                 onClick={() => setIsCreating(true)}
-                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors"
               >
                 Create Your First Note
               </button>
@@ -246,10 +246,10 @@ function AllNotesContent() {
         </div>
       ) : (
         <div>
-          <p className="text-gray-600 mb-4">
+          <p className="text-slate-600 mb-4">
             Showing {filteredNotes.length} of {notes.length} notes
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filteredNotes.map((note) => (
               <NoteCard
                 key={note.id}
@@ -265,60 +265,66 @@ function AllNotesContent() {
 
       {/* Note Editor Modal - Create */}
       {isCreating && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Create New Note</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-4xl bg-slate-50 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-slate-200 bg-white rounded-t-xl">
+              <h2 className="text-xl font-semibold text-slate-900">Create New Note</h2>
               <button
                 onClick={() => setIsCreating(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <NoteEditor
-              onSave={handleCreateNote}
-              onCancel={() => setIsCreating(false)}
-            />
+            <div className="p-6">
+              <NoteEditor
+                onSave={handleCreateNote}
+                onCancel={() => setIsCreating(false)}
+                enableRealtime={false}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Note Editor Modal - Edit */}
       {editingNote && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Edit Note</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-4xl bg-slate-50 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-slate-200 bg-white rounded-t-xl">
+              <h2 className="text-xl font-semibold text-slate-900">Edit Note</h2>
               <button
                 onClick={() => setEditingNote(null)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <NoteEditor
-              note={editingNote}
-              onSave={handleUpdateNote}
-              onCancel={() => setEditingNote(null)}
-            />
+            <div className="p-6">
+              <NoteEditor
+                note={editingNote}
+                onSave={handleUpdateNote}
+                onCancel={() => setEditingNote(null)}
+                enableRealtime={false}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Note Viewer Modal */}
       {selectedNote && !editingNote && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">{selectedNote.title}</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-4xl bg-white rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start p-6 border-b border-slate-200">
+              <h2 className="text-2xl font-semibold text-slate-900">{selectedNote.title}</h2>
               <button
                 onClick={() => setSelectedNote(null)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -326,27 +332,29 @@ function AllNotesContent() {
               </button>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-6 mb-6">
-              <p className="text-gray-800 whitespace-pre-wrap">{selectedNote.content}</p>
-            </div>
-
-            <div className="flex justify-between items-center pt-6 border-t">
-              <div className="text-sm text-gray-500">
-                Updated {new Date(selectedNote.updatedAt).toLocaleDateString()}
+            <div className="p-6">
+              <div className="bg-slate-50 rounded-lg p-6 mb-6">
+                <p className="text-slate-800 whitespace-pre-wrap leading-relaxed">{selectedNote.content}</p>
               </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setEditingNote(selectedNote)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteNote(selectedNote.id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                >
-                  Delete
-                </button>
+
+              <div className="flex justify-between items-center pt-4 border-t border-slate-200">
+                <div className="text-sm text-slate-500">
+                  Updated {new Date(selectedNote.updatedAt).toLocaleDateString()}
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setEditingNote(selectedNote)}
+                    className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteNote(selectedNote.id)}
+                    className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>

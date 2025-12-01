@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 const handler = NextAuth({
   providers: [
@@ -17,6 +18,28 @@ const handler = NextAuth({
         },
       },
     }),
+    // Development-only: Simple test login for localhost
+    ...(process.env.NODE_ENV === 'development' ? [
+      CredentialsProvider({
+        name: 'Test Account',
+        credentials: {
+          email: { label: "Email", type: "email", placeholder: "test@localhost.dev" },
+          password: { label: "Password", type: "password" }
+        },
+        async authorize(credentials) {
+          // Accept any login in development
+          if (credentials?.email && credentials?.password) {
+            return {
+              id: 'dev-user-' + Date.now(),
+              email: credentials.email,
+              name: credentials.email.split('@')[0],
+              image: null,
+            };
+          }
+          return null;
+        },
+      })
+    ] : []),
   ],
   session: {
     strategy: "jwt",
@@ -24,7 +47,7 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       // After successful Google sign-in, create/update user in our backend
-      if (account?.provider === 'google') {
+      if (account?.provider === 'google' || account?.provider === 'credentials') {
         try {
           // Step 1: Sync user to backend
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/auth/sync-user`, {

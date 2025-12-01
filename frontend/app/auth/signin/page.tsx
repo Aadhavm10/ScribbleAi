@@ -113,6 +113,15 @@ export default function SignIn() {
             </div>
           </div>
 
+          {/* Development Mode Notice */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>🔧 Dev Mode:</strong> Use any email/password to login
+              </p>
+            </div>
+          )}
+
           {/* Email/Password Form */}
           <form onSubmit={handleCredentialsSignIn} className="space-y-4">
             <div>
@@ -126,7 +135,7 @@ export default function SignIn() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/70 backdrop-blur-sm"
-                placeholder="Enter your email"
+                placeholder="test@localhost.dev"
               />
             </div>
 
