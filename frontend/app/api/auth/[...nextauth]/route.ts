@@ -49,8 +49,11 @@ const handler = NextAuth({
       // After successful Google sign-in, create/update user in our backend
       if (account?.provider === 'google' || account?.provider === 'credentials') {
         try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+          console.log('[NextAuth] Syncing user to backend:', apiUrl);
+          
           // Step 1: Sync user to backend
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/auth/sync-user`, {
+          const response = await fetch(`${apiUrl}/auth/sync-user`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -63,7 +66,14 @@ const handler = NextAuth({
           });
 
           if (!response.ok) {
-            console.error('Failed to sync user to backend');
+            const errorText = await response.text();
+            console.error('[NextAuth] Failed to sync user to backend:', response.status, errorText);
+            // In development, allow login even if backend sync fails
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('[NextAuth] Allowing login in development despite backend sync failure');
+              user.id = 'dev-user-' + Date.now();
+              return true;
+            }
             return false;
           }
 
@@ -71,7 +81,7 @@ const handler = NextAuth({
           user.id = data.id;
 
           // Step 2: Generate backend JWT for API requests
-          const jwtResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/auth/generate-token`, {
+          const jwtResponse = await fetch(`${apiUrl}/auth/generate-token`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -84,7 +94,13 @@ const handler = NextAuth({
             user.backendToken = jwtData.token;
           }
         } catch (error) {
-          console.error('Error syncing user to backend:', error);
+          console.error('[NextAuth] Error syncing user to backend:', error);
+          // In development, allow login even if backend sync fails
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('[NextAuth] Allowing login in development despite error');
+            user.id = 'dev-user-' + Date.now();
+            return true;
+          }
           return false;
         }
       }

@@ -153,42 +153,16 @@ export default function CollabPage() {
           </div>
         </div>
 
-        {/* Main content area with editor and users sidebar */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Note Editor - Main area */}
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="max-w-4xl mx-auto">
-              <NoteEditor
-                note={activeNote}
-                onSave={handleUpdateNote}
-                onCancel={handleLeaveSession}
-                enableRealtime={true}
-              />
-            </div>
-          </div>
-
-          {/* Users Sidebar - Right */}
-          <div className="w-72 bg-white border-l border-slate-200 p-6">
-            <h3 className="text-sm font-semibold text-slate-900 mb-4">Active Users</h3>
-            <div className="space-y-3">
-              {/* Note: Real user list would come from useRealtimeNote hook */}
-              <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-slate-900 truncate">
-                    {user?.name || user?.email || 'You'}
-                  </div>
-                  <div className="text-xs text-slate-500">Host</div>
-                </div>
-              </div>
-              <div className="text-xs text-slate-500 text-center py-4">
-                Waiting for others to join...
-              </div>
-            </div>
-          </div>
+        {/* Main content area with editor (full screen) */}
+        <div className="flex-1 overflow-hidden">
+          <NoteEditor
+            note={activeNote}
+            onSave={handleUpdateNote}
+            onCancel={handleLeaveSession}
+            enableRealtime={true}
+          />
         </div>
+
       </div>
     );
   }

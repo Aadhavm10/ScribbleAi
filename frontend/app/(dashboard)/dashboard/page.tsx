@@ -165,13 +165,10 @@ export default function DashboardPage() {
   // Loading states
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-6"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto opacity-50" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-          </div>
-          <p className="text-gray-700 text-lg font-medium">Checking authentication...</p>
+          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-700 text-lg font-medium">Checking authentication...</p>
         </div>
       </div>
     );
@@ -183,37 +180,34 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="relative mb-8">
-            <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto opacity-50" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-          </div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">
             ScribblyAi
           </h2>
-          <p className="text-gray-700 text-lg font-medium mb-2">Loading your notes...</p>
-          <p className="text-gray-500 text-sm">Powered by AI</p>
+          <p className="text-slate-700 text-lg font-medium mb-2">Loading your notes...</p>
+          <p className="text-slate-500 text-sm">Powered by AI</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-slate-50 min-h-screen">
       {/* Welcome Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-white mb-2">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">
           Welcome back, {user?.name || 'User'}!
         </h1>
-        <p className="text-gray-400">Here's what's happening with your notes today.</p>
+        <p className="text-slate-600">Here's what's happening with your notes today.</p>
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="mb-6 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm">
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-lg">
           <div className="flex items-center space-x-2">
-            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="font-medium">{error}</span>
@@ -222,111 +216,73 @@ export default function DashboardPage() {
       )}
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-6 hover:bg-white/[0.07] transition-all">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 rounded-lg flex items-center justify-center border border-indigo-500/30">
-              <svg className="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div>
-              <p className="text-3xl font-bold text-white">{notes.length}</p>
-              <p className="text-sm text-gray-400">Total Notes</p>
+              <p className="text-3xl font-bold text-slate-900">{notes.length}</p>
+              <p className="text-sm text-slate-600">Total Notes</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-6 hover:bg-white/[0.07] transition-all">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-teal-600/20 rounded-lg flex items-center justify-center border border-teal-500/30">
-              <svg className="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div>
-              <p className="text-3xl font-bold text-white">{recentNotes.length}</p>
-              <p className="text-sm text-gray-400">Recent Notes</p>
+              <p className="text-3xl font-bold text-slate-900">{recentNotes.length}</p>
+              <p className="text-sm text-slate-600">Recent Notes</p>
             </div>
           </div>
         </div>
 
         <button
           onClick={() => setIsCreating(true)}
-          className="bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-xl shadow-lg shadow-indigo-500/20 p-6 transition-all duration-200 hover:shadow-indigo-500/30 hover:scale-[1.02] group"
+          className="bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm p-6 transition-all duration-200 hover:shadow-md group text-left"
         >
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-all duration-200">
+            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <div className="text-left">
-              <p className="text-2xl font-semibold text-white">New Note</p>
-              <p className="text-sm text-white/70">Create something new</p>
+            <div>
+              <p className="text-xl font-semibold text-white">New Note</p>
+              <p className="text-sm text-indigo-100">Create something new</p>
             </div>
           </div>
         </button>
       </div>
 
-      {/* Note Editor Modal */}
+      {/* Note Editor Modal - Full Screen */}
       {isCreating && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Create New Note</h2>
-              </div>
-              <button
-                onClick={() => setIsCreating(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <NoteEditor
-              onSave={handleCreateNote}
-              onCancel={() => setIsCreating(false)}
-            />
-          </div>
+        <div className="fixed inset-0 z-[100] bg-white">
+          <NoteEditor
+            onSave={handleCreateNote}
+            onCancel={() => setIsCreating(false)}
+            enableRealtime={false}
+          />
         </div>
       )}
 
-      {/* Note Editor Modal for Editing */}
+      {/* Note Editor Modal for Editing - Full Screen */}
       {editingNote && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Edit Note</h2>
-              </div>
-              <button
-                onClick={() => setEditingNote(null)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <NoteEditor
-              note={editingNote}
-              onSave={handleUpdateNoteWrapper}
-              onCancel={() => setEditingNote(null)}
-            />
-          </div>
+        <div className="fixed inset-0 z-[100] bg-white">
+          <NoteEditor
+            note={editingNote}
+            onSave={handleUpdateNote}
+            onCancel={() => setEditingNote(null)}
+            enableRealtime={false}
+          />
         </div>
       )}
 
@@ -342,12 +298,12 @@ export default function DashboardPage() {
         {/* Recent Notes - Takes 2 columns */}
         <div className="lg:col-span-2">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-xl font-semibold text-slate-900">
               Recent Notes
             </h2>
             <button
               onClick={() => router.push('/notes')}
-              className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-2 group text-sm"
+              className="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-2 group text-sm transition-colors"
             >
               <span>View All</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -358,20 +314,19 @@ export default function DashboardPage() {
 
           {recentNotes.length === 0 ? (
             <div className="text-center py-16">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-12">
-                <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+                <div className="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">No notes yet</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">Get started by creating your first note. ScribblyAi will help you summarize, rephrase, and extract tasks from your content!</p>
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">No notes yet</h3>
+                <p className="text-slate-600 mb-6 leading-relaxed">Get started by creating your first note. ScribblyAi will help you summarize, rephrase, and extract tasks from your content!</p>
                 <button
                   onClick={() => setIsCreating(true)}
-                  className="group relative px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 overflow-hidden"
+                  className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-                  <span className="relative flex items-center space-x-2">
+                  <span className="flex items-center space-x-2">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
@@ -381,7 +336,7 @@ export default function DashboardPage() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {recentNotes.map((note) => (
               <NoteCard
                 key={note.id}

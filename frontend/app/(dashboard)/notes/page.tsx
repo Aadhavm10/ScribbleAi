@@ -263,56 +263,26 @@ function AllNotesContent() {
         </div>
       )}
 
-      {/* Note Editor Modal - Create */}
+      {/* Note Editor Modal - Create (Full Screen) */}
       {isCreating && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-slate-50 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-slate-200 bg-white rounded-t-xl">
-              <h2 className="text-xl font-semibold text-slate-900">Create New Note</h2>
-              <button
-                onClick={() => setIsCreating(false)}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-6">
-              <NoteEditor
-                onSave={handleCreateNote}
-                onCancel={() => setIsCreating(false)}
-                enableRealtime={false}
-              />
-            </div>
-          </div>
+        <div className="fixed inset-0 z-[100] bg-white">
+          <NoteEditor
+            onSave={handleCreateNote}
+            onCancel={() => setIsCreating(false)}
+            enableRealtime={false}
+          />
         </div>
       )}
 
-      {/* Note Editor Modal - Edit */}
+      {/* Note Editor Modal - Edit (Full Screen) */}
       {editingNote && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-4xl bg-slate-50 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-slate-200 bg-white rounded-t-xl">
-              <h2 className="text-xl font-semibold text-slate-900">Edit Note</h2>
-              <button
-                onClick={() => setEditingNote(null)}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-6">
-              <NoteEditor
-                note={editingNote}
-                onSave={handleUpdateNote}
-                onCancel={() => setEditingNote(null)}
-                enableRealtime={false}
-              />
-            </div>
-          </div>
+        <div className="fixed inset-0 z-[100] bg-white">
+          <NoteEditor
+            note={editingNote}
+            onSave={handleUpdateNote}
+            onCancel={() => setEditingNote(null)}
+            enableRealtime={false}
+          />
         </div>
       )}
 
